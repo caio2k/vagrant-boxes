@@ -6,3 +6,5 @@ sh /mnt/VBoxLinuxAdditions.run
 umount /mnt
 rm -rf /root/VBoxGuestAdditions_*.iso
 
+#Disable useless service
+chkconfig vboxadd-x11 off
