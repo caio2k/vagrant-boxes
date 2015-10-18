@@ -32,8 +32,9 @@
       "type": "shell",
       "scripts": [
         "scripts/base.sh",
+        "scripts/ansible.sh",
         "scripts/vagrant.sh",
-        "scripts/virtualbox.sh",
+        "scripts/vmtool.sh",
         "scripts/cleanup.sh",
         "scripts/info.sh",
         "scripts/zerodisk.sh"

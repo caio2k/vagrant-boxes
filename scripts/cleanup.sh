@@ -1,9 +1,9 @@
 yum -y erase gtk2 libX11 hicolor-icon-theme avahi freetype bitstream-vera-fonts
-yum -y remove gcc cpp kernel-devel kernel-headers perl 
+yum -y remove perl yum-utils
 yum -y clean all
-rm -rf /etc/yum.repos.d/{puppetlabs,epel}.repo
-rm -rf VBoxGuestAdditions_*.iso
+#rm -f /etc/yum.repos.d/epel.repo
+rm -rf /tmp/*
 
 # Remove traces of mac address from network configuration
 sed -i /HWADDR/d /etc/sysconfig/network-scripts/ifcfg-eth0
-rm /etc/udev/rules.d/70-persistent-net.rules
+rm /etc/udev/rules.d/70-persistent-net.rules /etc/udev/rules.d/70-persistent-cd.rules /lib/udev/rules.d/75-persistent-net-generator.rules
