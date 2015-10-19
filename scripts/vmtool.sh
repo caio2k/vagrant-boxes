@@ -6,7 +6,7 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
 
   #installing required packages
   if [ -f /etc/redhat-release ]; then
-    yum -y install gcc-c++ kernel-devel-`uname -r` kernel-headers
+    yum -y install gcc-c++ kernel-devel-`uname -r` kernel-headers perl
   fi
 
   mount -o loop /root/VBoxGuestAdditions_$VBOX_VERSION.iso /mnt
@@ -22,6 +22,6 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
   #uninstalling required packages and disabling uneeded service
   if [ -f /etc/redhat-release ]; then
     chkconfig vboxadd-x11 off
-    yum -y remove gcc-c++ kernel-devel-`uname -r` kernel-headers
+    yum -y remove gcc-c++ kernel-devel-`uname -r` kernel-headers perl
   fi
 fi

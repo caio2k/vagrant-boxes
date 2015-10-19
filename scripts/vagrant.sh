@@ -1,3 +1,9 @@
+#!/bin/bash
+
+if [ -f /etc/redhat-release ]; then
+  yum -y install wget
+fi
+
 # Vagrant specific
 date > /etc/vagrant_box_build_time
 
@@ -17,3 +23,7 @@ chown -R vagrant /home/vagrant/.ssh
 
 # Customize the message of the day
 echo 'Welcome to your Vagrant-built virtual machine.' > /etc/motd
+
+if [ -f /etc/redhat-release ]; then
+  yum -y remove wget
+fi
