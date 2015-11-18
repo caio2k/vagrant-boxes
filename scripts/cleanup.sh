@@ -1,5 +1,7 @@
 #!/bin/bash
 
+package-cleanup -y --oldkernels --count=1
+
 if [ -f /etc/redhat-release ]; then
   yum -y erase gtk2 libX11 hicolor-icon-theme avahi freetype bitstream-vera-fonts
   yum -y remove perl yum-utils
