@@ -1,1 +1,1 @@
-echo "VirtualBox Guest Additions $(cat /root/.vbox_version), Chef $(ansible --version)"
+echo "VirtualBox Guest Additions $(cat /root/.vbox_version), Ansible $(ansible --version)"
