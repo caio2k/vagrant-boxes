@@ -17,7 +17,8 @@ fi
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
 # Remove old kernels
-package-cleanup --oldkernels --count=1
+#it will not remove running kernel, so this step should be taken in a script after reboot
+#package-cleanup -y --oldkernels --count=1
 
 # Rebooting to be sure we are using the latest kernel
 reboot
