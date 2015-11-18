@@ -1,0 +1,22 @@
+{
+    "name": "centos67",
+    "description": "This box contain CentOS 6.7 x86_64 with kernel 2.6.32-573.8.1.el6",
+    "versions": [{
+        "version": "1.0.0",
+        "providers": [{
+                "name": "virtualbox",
+                "url": "https://github.com/caio2k/vagrant-boxes/releases/download/v20151019/CentOS-6.7-x86_64-v20151019.box",
+                "checksum_type": "sha1",
+                "checksum": "731df08b971b293869aa2e24f08efa4974a4c0ae"
+        }]
+    },
+    {
+        "version": "1.1.0",
+        "providers": [{
+                "name": "virtualbox",
+                "url": "https://github.com/caio2k/vagrant-boxes/releases/download/v20151117/CentOS-6.7-x86_64-v20151117.box",
+                "checksum_type": "sha1",
+                "checksum": "9ff65d89025b120a1436942a2bfab2dc595465e9"
+        }]
+    }]
+}
