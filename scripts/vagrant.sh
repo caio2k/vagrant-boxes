@@ -2,6 +2,8 @@
 
 if [ -f /etc/redhat-release ]; then
   yum -y install wget
+  #this is to enable NFS mouting in vagrant
+  yum -y install nfs-utils nfs-utils-lib
 fi
 
 # Vagrant specific
