@@ -27,5 +27,14 @@
                 "checksum_type": "sha1",
                 "checksum": "3ec3ceffc1153fa34bd2f1ad630174bdcbf3a098"
         }]
+    },
+    {
+        "version": "8.0.2",
+        "providers": [{
+                "name": "virtualbox",
+                "url": "https://github.com/caio2k/vagrant-boxes/releases/download/v20151208/CentOS-6.7-x86_64-v20151208.box",
+                "checksum_type": "sha1",
+                "checksum": "34b60ba93be25a4ed4bb8d87311f1cd42e8c1f64"
+        }]
     }]
 }
