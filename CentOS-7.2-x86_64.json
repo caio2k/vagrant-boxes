@@ -1,0 +1,68 @@
+{
+  "min_packer_version": "0.6.0",
+  "variables": {
+    "build_version": "{{env `BUILD_VERSION`}}"
+  },
+  "builders": [
+    {
+      "name": "CentOS-7.2-x86_64-{{user `build_version`}}",
+      "type": "virtualbox-iso",
+      "guest_os_type": "RedHat_64",
+      "iso_url": "{{user `iso_mirror`}}/7/isos/x86_64/CentOS-7-x86_64-Minimal-1511.iso",
+      "iso_checksum": "f90e4d28fa377669b2db16cbcb451fcb9a89d2460e3645993e30e137ac37d284",
+      "iso_checksum_type": "sha256",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "disk_size": 204800,
+      "http_directory": "http",
+      "boot_command": ["<tab> text ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks.cfg<enter><wait>"],
+      "boot_wait": "10s",
+      "ssh_username": "root",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "90m",
+      "shutdown_command": "sudo /sbin/halt -h -p",
+      "hard_drive_interface": "sata",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "480"],
+        ["modifyvm", "{{.Name}}", "--cpus", "1"],
+        ["modifyvm", "{{.Name}}", "--chipset", "ich9"],
+        ["modifyvm", "{{.Name}}", "--paravirtprovider", "kvm"],
+        ["modifyvm", "{{.Name}}", "--nictype1", "virtio"]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/base.sh",
+        "scripts/ansible.sh",
+        "scripts/vagrant.sh",
+        "scripts/vmtool.sh",
+        "scripts/cleanup.sh",
+        "scripts/info.sh",
+        "scripts/zerodisk.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "compression_level": 9,
+      "output": "./boxes/{{.BuildName}}.box"
+    }
+  ],
+  "variables": {
+    "cleanup_pause": "",
+    "ftp_proxy": "{{env `ftp_proxy`}}",
+    "headless": "true",
+    "http_proxy": "{{env `http_proxy`}}",
+    "https_proxy": "{{env `https_proxy`}}",
+    "iso_mirror": "http://ftp.ciril.fr/pub/linux/centos",
+    "no_proxy": "{{env `no_proxy`}}",
+    "rsync_proxy": "{{env `rsync_proxy`}}",
+    "ssh_password": "vagrant",
+    "ssh_username": "vagrant",
+    "update": "false",
+    "version": "0.1.0"
+  }
+}

@@ -11,6 +11,8 @@ if [ -f /etc/redhat-release ]; then
 
   # Remove traces of mac address from network configuration
   sed -i /HWADDR/d /etc/sysconfig/network-scripts/ifcfg-eth0
-  rm /etc/udev/rules.d/70-persistent-net.rules /etc/udev/rules.d/70-persistent-cd.rules /lib/udev/rules.d/75-persistent-net-generator.rules
+  if [ -f /etc/udev/rules.d/70-persistent-net.rules ]; then
+    rm /etc/udev/rules.d/70-persistent-net.rules /etc/udev/rules.d/70-persistent-cd.rules /lib/udev/rules.d/75-persistent-net-generator.rules
+  fi
 
 fi

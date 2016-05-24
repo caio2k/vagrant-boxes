@@ -8,9 +8,10 @@ echo 'options single-request-reopen' >> /etc/resolv.conf
 
 if [ -f /etc/redhat-release ]; then
   yum update
+  yum -y install deltarpm 
   yum -y upgrade
   yum -y install yum-utils
-  #yum -y install gcc make gcc-c++ kernel-devel-`uname -r` zlib-devel openssl-devel readline-devel sqlite-devel perl wget dkms nfs-utils
+  #yum -y install gcc make gcc-c++ kernel-devel-`uname -r` zlib-devel openssl-devel readline-devel sqlite-devel perl wget dkms nfs-utils 
 fi
 
 # Make ssh faster by not waiting on DNS
