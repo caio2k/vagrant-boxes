@@ -61,6 +61,18 @@
       "type": "vagrant",
       "compression_level": 9,
       "output": "./boxes/{{.BuildName}}.box"
+      "keep_input_artifact": false
+    },
+    {
+      "type": "atlas",
+      "only": ["virtualbox-iso"],
+      "artifact": "{{ env `ATLAS_BUILD_SLUG`}}",
+      "artifact_type": "vagrant.box",
+      "metadata": {
+        "provider": "virtualbox",
+        "version": "0.1.35"
+      }
     }
+
   ]
 }
