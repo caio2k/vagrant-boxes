@@ -1,7 +1,19 @@
 {
   "min_packer_version": "0.6.0",
   "variables": {
-    "build_version": "{{env `BUILD_VERSION`}}"
+    "build_version": "{{env `ATLAS_BUILD_NUMBER`}}",
+    "cleanup_pause": "",
+    "headless": "true",
+    "http_proxy": "{{env `http_proxy`}}",
+    "https_proxy": "{{env `https_proxy`}}",
+    "ftp_proxy": "{{env `ftp_proxy`}}",
+    "no_proxy": "{{env `no_proxy`}}",
+    "iso_mirror": "http://ftp.ciril.fr/pub/linux/centos",
+    "rsync_proxy": "{{env `rsync_proxy`}}",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "update": "false",
+    "version": "0.1.0"
   },
   "builders": [
     {
@@ -50,19 +62,5 @@
       "compression_level": 9,
       "output": "./boxes/{{.BuildName}}.box"
     }
-  ],
-  "variables": {
-    "cleanup_pause": "",
-    "ftp_proxy": "{{env `ftp_proxy`}}",
-    "headless": "true",
-    "http_proxy": "{{env `http_proxy`}}",
-    "https_proxy": "{{env `https_proxy`}}",
-    "iso_mirror": "http://ftp.ciril.fr/pub/linux/centos",
-    "no_proxy": "{{env `no_proxy`}}",
-    "rsync_proxy": "{{env `rsync_proxy`}}",
-    "ssh_password": "vagrant",
-    "ssh_username": "vagrant",
-    "update": "false",
-    "version": "0.1.0"
-  }
+  ]
 }
