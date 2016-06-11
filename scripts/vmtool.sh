@@ -1,14 +1,12 @@
 #!/bin/bash
 #by caio2k
 
-OS_TYPE=${1-centos}
-
 if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
-  if [[ $OS_TYPE == "centos" ]]; then
+  if [[ $OSTYPE == "linux-gnu" ]]; then
     VBOX_VERSION=$(cat /root/.vbox_version)
 
     #installing required packages
-    if [ -f /etc/redhat-release ]; then
+    if [[ -f /etc/redhat-release ]]; then
       yum -y install gcc-c++ kernel-devel-`uname -r` kernel-headers perl bzip2
     fi
 
@@ -18,16 +16,16 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
     umount /mnt
     rm -f /root/VBoxGuestAdditions_*.iso
 
-    if [ $VBOX_VERSION = "4.3.10" ]; then
+    if [[ $VBOX_VERSION = "4.3.10" ]]; then
       ln -s /opt/VBoxGuestAdditions-4.3.10/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditions
     fi
 
     #uninstalling required packages and disabling uneeded service
-    if [ -f /etc/redhat-release ]; then
+    if [[ -f /etc/redhat-release ]]; then
       chkconfig vboxadd-x11 off
       yum -y remove gcc-c++ kernel-devel-`uname -r` kernel-headers perl
     fi
-  else
+  elif [[ $OSTYPE =~ "solaris" ]]; then
     echo "Installing VirtualBox Guest Additions"
     echo "mail=\ninstance=overwrite\npartial=quit" > /tmp/noask.admin
     echo "runlevel=nocheck\nidepend=quit\nrdepend=quit" >> /tmp/noask.admin

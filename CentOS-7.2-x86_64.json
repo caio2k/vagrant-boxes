@@ -13,7 +13,8 @@
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
     "update": "false",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "atlas_build_slug": "{{ env `ATLAS_BUILD_SLUG`}}"
   },
   "builders": [
     {
@@ -57,22 +58,21 @@
     }
   ],
   "post-processors": [
-    {
+    [{
       "type": "vagrant",
       "compression_level": 9,
-      "output": "./boxes/{{.BuildName}}.box"
+      "output": "./boxes/{{.BuildName}}.box",
       "keep_input_artifact": false
     },
     {
       "type": "atlas",
-      "only": ["virtualbox-iso"],
-      "artifact": "{{ env `ATLAS_BUILD_SLUG`}}",
+      "artifact": "{{user `atlas_build_slug`}}",
       "artifact_type": "vagrant.box",
       "metadata": {
         "provider": "virtualbox",
         "version": "0.1.35"
       }
-    }
+    }]
 
   ]
 }

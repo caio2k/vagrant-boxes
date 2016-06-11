@@ -1,10 +1,7 @@
 #!/bin/bash
 
-OS_TYPE=${1-centos}
-
-if [[ $OS_TYPE == "centos" ]]; then
-
-  if [ -f /etc/redhat-release ]; then
+if [[ $OSTYPE == "linux-gnu" ]]; then
+  if [[ -f /etc/redhat-release ]]; then
     yum -y install wget
     #this is to enable NFS mouting in vagrant
     yum -y install nfs-utils nfs-utils-lib
@@ -30,10 +27,10 @@ if [[ $OS_TYPE == "centos" ]]; then
   # Customize the message of the day
   echo 'Welcome to your Vagrant-built virtual machine.' > /etc/motd
 
-  if [ -f /etc/redhat-release ]; then
+  if [[ -f /etc/redhat-release ]]; then
     yum -y remove wget
   fi
-else
+elif [[ $OSTYPE =~ "solaris" ]]; then
   echo "Setting the vagrant ssh pub key"
   mkdir /export/home/vagrant/.ssh
   chmod 700 /export/home/vagrant/.ssh
@@ -50,12 +47,4 @@ else
   # disable the very annoying sendmail
   /usr/sbin/svcadm disable sendmail
   /usr/sbin/svcadm disable asr-notify
-
-  echo "Clearing log files and zeroing disk, this might take a while"
-  cp /dev/null /var/adm/messages
-  cp /dev/null /var/log/syslog
-  cp /dev/null /var/adm/wtmpx
-  cp /dev/null /var/adm/utmpx
-  dd if=/dev/zero of=/EMPTY bs=1024
-  rm -f /EMPTY
 fi
