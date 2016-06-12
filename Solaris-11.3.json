@@ -85,7 +85,7 @@
         "exit<enter><wait>"
       ],
       "boot_wait": "30s",
-      "disk_size": 8192,
+      "disk_size": 204800,
       "guest_os_type": "Solaris11_64",
       "iso_checksum": "a61f027eb51d997d6daa51712179cb4a",
       "iso_checksum_type": "md5",
@@ -120,6 +120,7 @@
       "scripts": [
         "scripts/vmtool.sh",
         "scripts/vagrant.sh",
+        "scripts/ansible.sh",
         "scripts/zerodisk.sh"
       ],
       "type": "shell"
