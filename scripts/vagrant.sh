@@ -5,18 +5,23 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
     yum -y install wget
     #this is to enable NFS mouting in vagrant
     yum -y install nfs-utils nfs-utils-lib
+  elif [[ -f /etc/debian_version ]]; then
+    apt-get -y install wget
   fi
 
   # Vagrant specific
   date > /etc/vagrant_box_build_time
 
   # Add vagrant user
-  /usr/sbin/groupadd vagrant
-  /usr/sbin/useradd vagrant -g vagrant -G wheel
-  echo "vagrant"|passwd --stdin vagrant
-  echo "Defaults !requiretty" >> /etc/sudoers.d/vagrant
-  echo "vagrant        ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers.d/vagrant
-  chmod 0440 /etc/sudoers.d/vagrant
+  if ! id -u vagrant >/dev/null 2>&1; then
+    /usr/sbin/groupadd vagrant
+    /usr/sbin/useradd vagrant -g vagrant -G wheel
+    echo "vagrant"|passwd --stdin vagrant
+  fi
+  echo "Defaults !requiretty"                         >  /tmp/vagrant
+  echo "vagrant        ALL=(ALL)       NOPASSWD: ALL" >> /tmp/vagrant
+  chmod 0440 /tmp/vagrant
+  mv /tmp/vagrant /etc/sudoers.d/
 
   # Installing vagrant keys
   mkdir -pm 700 /home/vagrant/.ssh
@@ -29,6 +34,12 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
 
   if [[ -f /etc/redhat-release ]]; then
     yum -y remove wget
+  elif [[ -f /etc/debian_version ]]; then
+    apt-get -y remove wget
+    sed -i '/UsePAM/aUseDNS no' /etc/ssh/sshd_config
+    sed -i '/env_reset/aDefaults        env_keep += "SSH_AUTH_SOCK"' /etc/sudoers;
+    sed -i '/exit/i\/usr\/bin\/apt-get update' /etc/rc.local;
+    adduser vagrant adm
   fi
 elif [[ $OSTYPE =~ "solaris" ]]; then
   echo "Setting the vagrant ssh pub key"
