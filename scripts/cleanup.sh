@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "Launching cleanup script"
 if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
   if [[ $OSTYPE == "linux-gnu" ]]; then
     if [ -f /etc/redhat-release ]; then

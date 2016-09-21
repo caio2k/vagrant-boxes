@@ -1,6 +1,7 @@
 #!/bin/bash
 # Base install
 
+echo "Launching base script"
 if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
   if [[ $OSTYPE == "linux-gnu" ]]; then
 

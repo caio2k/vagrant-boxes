@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "Launching vagrant script"
 if [[ $OSTYPE == "linux-gnu" ]]; then
   if [[ -f /etc/redhat-release ]]; then
     yum -y install wget

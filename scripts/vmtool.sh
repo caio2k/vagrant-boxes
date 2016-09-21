@@ -1,6 +1,7 @@
 #!/bin/bash
 #by caio2k
 
+echo "Launching vmtool script"
 if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
   if [[ $OSTYPE == "linux-gnu" ]]; then
 
