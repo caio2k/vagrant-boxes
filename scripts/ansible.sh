@@ -6,6 +6,8 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
   if [[ -f /etc/redhat-release ]]; then
     yum -y install epel-release
     yum -y install ansible
+    #this is needed by vagrant-winnfs (vagrant NFS plugin). if you are behind proxy, it cannot be automagically installed
+    yum -y install nfs-utils nfs-utils-lib
     yum -y remove epel-release
   elif [[ -f /etc/debian_version ]]; then
     apt-get install -y sshpass
