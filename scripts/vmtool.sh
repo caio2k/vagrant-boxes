@@ -27,7 +27,10 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
     if [[ $VBOX_VERSION = "4.3.10" ]]; then
       ln -s /opt/VBoxGuestAdditions-4.3.10/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditions
     fi
-
+    
+    echo "adding user vagrant into group vboxsf"
+    usermod -a -G vboxsf vagrant
+    
     echo "uninstalling required packages and disabling uneeded service"
     if [[ -f /etc/redhat-release ]]; then
       chkconfig vboxadd-x11 off
