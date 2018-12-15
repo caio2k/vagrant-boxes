@@ -1,0 +1,81 @@
+{
+  "variables": {
+    "cores": "2",
+    "memory": "512",
+    "disk_size": "10140",
+    "ssh_user": "vagrant",
+    "ssh_pass": "vagrant",
+    "ssh_wait_timeout": "10000s",
+    "debian_version": "9.6.0",
+    "iso_checksum": "fcd77acbd46f33e0a266faf284acc1179ab0a3719e4b8abebac555307aa978aa242d7052c8d41e1a5fc6d1b30bc6ca6d62269e71526b71c9d5199b13339f0e25",
+    "vm_name": "devel"
+  },
+  "builders": [
+    {
+      "boot_command": [
+        "<esc><wait>",
+        "install <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian9.cfg <wait>",
+        "debian-installer=en_US <wait>",
+        "auto <wait>",
+        "locale=en_US <wait>",
+        "kbd-chooser/method=us <wait>",
+        "netcfg/get_hostname={{ .Name }} <wait>",
+        "netcfg/get_domain=vagrantup.com <wait>",
+        "fb=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "console-keymaps-at/keymap=us <wait>",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "passwd/root-login=false <wait>",
+        "passwd/user-fullname={{user `ssh_user`}} <wait>",
+        "passwd/username={{user `ssh_user`}} <wait>",
+        "passwd/user-password=\"{{user `ssh_pass`}}\" <wait>",
+        "passwd/user-password-again=\"{{user `ssh_pass`}}\" <wait>",
+        "net.ifnames=0 <wait>",
+        "<enter><wait>"
+      ],
+      "boot_wait": "10s",
+      "headless": false,
+      "disk_size": 10140,
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "Debian_64",
+      "http_directory": "http",
+      "iso_checksum_type": "sha512",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "http://cdimage.debian.org/cdimage/release/{{user `debian_version`}}/amd64/iso-cd/debian-{{user `debian_version`}}-amd64-netinst.iso",
+      "shutdown_command": "echo '{{user `ssh_pass`}}' | sudo -S /sbin/shutdown -hP now",
+      "ssh_username": "{{user `ssh_user`}}",
+      "ssh_password": "{{user `ssh_pass`}}",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "{{user `ssh_wait_timeout`}}",
+      "type": "virtualbox-iso",
+      "vm_name": "debian-{{user `debian_version`}}-{{user `vm_name`}}",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cores`}}"],
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"]
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "output": "debian-{{user `debian_version`}}-{{user `vm_name`}}-vbox.box",
+      "type": "vagrant"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo '{{user `ssh_pass`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "scripts/base.sh",
+        "scripts/vmtool.sh",
+        "scripts/vagrant.sh",
+        "scripts/devel.sh",
+        "scripts/ansible.sh",
+        "scripts/cleanup.sh"
+      ]
+    }
+  ]
+}
+

@@ -15,6 +15,8 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
       rm -f /etc/udev/rules.d/70-persistent-net.rules /etc/udev/rules.d/70-persistent-cd.rules /lib/udev/rules.d/75-persistent-net-generator.rules
 
     elif [[ -f /etc/debian_version ]]; then
+      apt-get --yes autoremove
+      apt-get --yes clean
       rm -rf /dev/.udev/
       rm -f /lib/udev/rules.d/75-persistent-net-generator.rules
       echo "pre-up sleep 2" >> /etc/network/interfaces

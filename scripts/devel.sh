@@ -3,7 +3,7 @@
 if [[ $OSTYPE == "linux-gnu" ]]; then
   if [[ -f /etc/debian_version ]]; then
     if `grep -q ^8 /etc/debian_version`; then
-	  USER_HOME='/home/vagrant'
+      USER_HOME='/home/vagrant'
   
       echo 'deb     [arch=i386] http://ftp.fr.debian.org/debian/ jessie main contrib'    >  /etc/apt/sources.list.d/jessie32.list
       echo 'deb-src [arch=i386] http://ftp.fr.debian.org/debian/ jessie main contrib'    >> /etc/apt/sources.list.d/jessie32.list
@@ -23,6 +23,32 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       pip install robotframework
       pip install -q https://github.com/HelioGuilherme66/RIDE/archive/v1.6b3.tar.gz
       
+      ln -s $USER_HOME/.Xauthority /root/
+
+      mkdir -p $USER_HOME/.config/gtk-3.0/
+      echo '[Settings]'                          >  $USER_HOME/.config/gtk-3.0/settings.ini
+      echo 'gtk-application-prefer-dark-theme=1' >> $USER_HOME/.config/gtk-3.0/settings.ini
+      
+      chown -R vagrant $USER_HOME/.config
+
+    fi
+    elif `grep -q ^9 /etc/debian_version`; then
+      USER_HOME='/home/vagrant'
+  
+      dpkg --add-architecture i386
+      
+      #vscode - cannot be seeded due to non-standard gpg
+      curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+      install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+      echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list
+      apt-get update
+      apt-get install code
+      
+      #snaps
+      snap install intellij-idea-community --classic
+      snap install pycharm-community --classic
+      snap install postman
+
       ln -s $USER_HOME/.Xauthority /root/
 
       mkdir -p $USER_HOME/.config/gtk-3.0/
