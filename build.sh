@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #by caio2k
 
 export PATH=/mnt/nas/devel/devops/packer:$PATH

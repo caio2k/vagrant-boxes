@@ -31,18 +31,20 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       
       chown -R vagrant $USER_HOME/.config
 
-    fi
     elif `grep -q ^9 /etc/debian_version`; then
       USER_HOME='/home/vagrant'
   
-      dpkg --add-architecture i386
-      
+      #docker
+      curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+      echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+
       #vscode - cannot be seeded due to non-standard gpg
-      curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-      install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+      curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | apt-key add -
       echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list
+
+      #install apt apps
       apt-get update
-      apt-get install code
+      apt-get install -y docker-ce code
       
       #snaps
       snap install intellij-idea-community --classic

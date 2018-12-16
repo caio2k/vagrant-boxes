@@ -1,5 +1,5 @@
 {
-  "min_packer_version": "0.6.0",
+  "min_packer_version": "1.3.0",
   "variables": {
     "build_version": "{{env `BUILD_VERSION`}}",
     "cleanup_pause": "",
@@ -26,7 +26,7 @@
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "disk_size": 204800,
       "http_directory": "http",
-      "boot_command": ["<tab> text ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks.cfg<enter><wait>"],
+      "boot_command": ["<tab> text ks=http://{{.HTTPIP}}:{{.HTTPPort}}/centos6.cfg<enter><wait>"],
       "boot_wait": "10s",
       "ssh_username": "root",
       "ssh_password": "vagrant",
@@ -45,8 +45,13 @@
   "provisioners": [
     {
       "type": "shell",
+      "expect_disconnect": "true",
+      "script": "scripts/base.sh"
+    },
+    {
+      "type": "shell",
+      "pause_before": "30s",
       "scripts": [
-        "scripts/base.sh",
         "scripts/ansible.sh",
         "scripts/vagrant.sh",
         "scripts/vmtool.sh",
@@ -57,10 +62,18 @@
     }
   ],
   "post-processors": [
-    {
+    [{
       "type": "vagrant",
       "compression_level": 9,
-      "output": "./boxes/{{.BuildName}}.box"
-    }
+      "output": "./boxes/{{.BuildName}}.box",
+      "keep_input_artifact": false
+    },
+    {
+      "type": "vagrant-cloud",
+      "box_tag": "caio2k/centos6",
+      "access_token": "{{user `cloud_token`}}",
+      "version": "{{user `version_number`}}-{{user `version_date`}}",
+      "no_release": "true"
+    }]
   ]
 }
