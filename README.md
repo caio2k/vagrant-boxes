@@ -32,7 +32,7 @@ Downloads
 These boxes were automatically built using [packer](http://www.packer.io) v1.3 (v0.6.0 for pre-2018 images) and the definitions in this repo.
 
 ```sh
-$ packer centos7.json
+$ packer build centos7.json
 ```
 
 This repo is heavily based on the [veewee project's](https://github.com/jedi4ever/veewee) definitions for a minimal CentOS installation.

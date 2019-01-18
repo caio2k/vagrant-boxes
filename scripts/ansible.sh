@@ -13,7 +13,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
     apt-get install -y sshpass
     if `grep -q ^8 /etc/debian_version`; then
       apt-get install -y -t jessie-backports ansible
-    if `grep -q ^9 /etc/debian_version`; then
+    elif `grep -q ^9 /etc/debian_version`; then
       apt-get install -y -t stretch-backports ansible
     fi
   fi

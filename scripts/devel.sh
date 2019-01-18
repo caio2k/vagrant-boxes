@@ -2,7 +2,7 @@
 
 if [[ $OSTYPE == "linux-gnu" ]]; then
   if [[ -f /etc/debian_version ]]; then
-    if `grep -q ^8 /etc/debian_version`; then
+    if   (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^8\.'` ) ; then
       USER_HOME='/home/vagrant'
   
       echo 'deb     [arch=i386] http://ftp.fr.debian.org/debian/ jessie main contrib'    >  /etc/apt/sources.list.d/jessie32.list
@@ -31,25 +31,27 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       
       chown -R vagrant $USER_HOME/.config
 
-    elif `grep -q ^9 /etc/debian_version`; then
+    elif (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^9\.'` ) ||
+         (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^16\.'`) ||
+         (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^17\.'`) ||
+         (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^18\.'`) ; then
       USER_HOME='/home/vagrant'
-  
-      #docker
+      #apt-friendly apps
+      ##docker
       curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
       echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
 
-      #vscode - cannot be seeded due to non-standard gpg
-      curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | apt-key add -
+      ##vscode - cannot be seeded due to non-standard gpg
+      curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
       echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list
 
-      #install apt apps
+      ##install them
       apt-get update
       apt-get install -y docker-ce code
-      
-      #snaps
+
+      #snap-friendly apps
       snap install intellij-idea-community --classic
       snap install pycharm-community --classic
-      snap install postman
 
       ln -s $USER_HOME/.Xauthority /root/
 
@@ -60,5 +62,13 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       chown -R vagrant $USER_HOME/.config
 
     fi
+
+    # Development tools common in debians/ubuntus
+    apt-get install -y git
+    apt-get install -y python-minimal
+    apt-get install -y python-pip
+    apt-get install -y python3-minimal
+    apt-get install -y python3-pip
+
   fi
 fi
