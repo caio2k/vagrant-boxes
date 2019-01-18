@@ -2,26 +2,37 @@
 
 ## Downloads
 
-* **[CentOS-6.7-x86_64-v20150426.box](https://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.7-x86_64-v20150426.box):** CentOS 6.7 x86\_64 Minimal *(VirtualBox Guest Additions 4.3.26, Chef: 12.2.1, Puppet 3.7.5)*  
-  Atlas Box: [nrel/CentOS-6.7-x86_64 v1.0.0](https://atlas.hashicorp.com/nrel/boxes/CentOS-6.7-x86_64/versions/1.0.0)  
-  <small>sha256sum: `8f92f74344b493886fe1bde2d61248a00212f176148452204e191db27d76b221`</small>
-* **[CentOS-6.7-i386-v20150426.box](https://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.7-i386-v20150426.box):** CentOS 6.7 i386 Minimal *(VirtualBox Guest Additions 4.3.26, Chef: 12.2.1, Puppet 3.7.5)*  
-  Atlas Box: [nrel/CentOS-6.7-i386 v1.0.0](https://atlas.hashicorp.com/nrel/boxes/CentOS-6.7-i386/versions/1.0.0)  
-  <small>sha256sum: `60ef725a8f3121c0a3a3c5dab308f5209cd530a325666d51dee72fc9e6055c77`</small>
+### CentOS 6 _x86\_64_
 
-Additional, older boxes are available on the [downloads page](http://nrel.github.io/vagrant-boxes/).
+Features
 
-## How these boxes were built
+* kernel 2.6.32-x
+* VirtualBox Guest Additions 5.x
+* ansible 2.x
 
-These boxes were automatically built using [packer](http://www.packer.io) (v0.6.0) and the definitions in this repo:
+Download
+
+* Atlas Box: [caio2k/centos6](https://app.vagrantup.com/caio2k/boxes/centos6)
+* Direct download: [CentOS-6.10-x86_64-v20181215.box](https://github.com/caio2k/vagrant-boxes/releases/download/v20181215/CentOS-6.10-x86_64-v20181215.box)
+
+### CentOS 7 _x86\_64_
+
+Features
+
+* kernel 3.10.0-x
+* VirtualBox Guest Additions 5.2.22
+* ansible 2.7+
+
+Downloads
+
+* Atlas Box: [caio2k/centos7](https://app.vagrantup.com/caio2k/boxes/centos7)
+
+## How to build on your own
+
+These boxes were automatically built using [packer](http://www.packer.io) v1.3 (v0.6.0 for pre-2018 images) and the definitions in this repo.
 
 ```sh
-$ cd packer
-$ ./build.sh
+$ packer centos7.json
 ```
 
-The definitions are based on the [veewee project's](https://github.com/jedi4ever/veewee) definitions for a minimal CentOS installation, but with a few modifications:
-
-- The disk can grow to 200GB
-- Provides 4GB of swap
-- Fixes [slow DNS resolution](https://github.com/NREL/vagrant-boxes/issues/5)
+This repo is heavily based on the [veewee project's](https://github.com/jedi4ever/veewee) definitions for a minimal CentOS installation.
