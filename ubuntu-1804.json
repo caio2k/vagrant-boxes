@@ -1,0 +1,102 @@
+{
+  "min_packer_version": "1.3.0",
+  "variables": {
+    "cores": "2",
+    "memory": "512",
+    "disk_size": "10140",
+    "ssh_user": "vagrant",
+    "ssh_pass": "vagrant",
+    "ssh_wait_timeout": "10000s",
+    "ubuntu_version": "18.04.2",
+    "iso_checksum": "a2cb36dc010d98ad9253ea5ad5a07fd6b409e3412c48f1860536970b073c98f5",
+    "vm_name": "devel"
+  },
+  "builders": [
+    {
+      "boot_command": [
+        "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><wait>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><wait>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><wait>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu1804.cfg <wait>",
+        "initrd=/install/initrd.gz <wait>",
+        "debian-installer=en_US <wait>",
+        "auto <wait>",
+        "locale=en_US <wait>",
+        "kbd-chooser/method=us <wait>",
+        "netcfg/get_hostname={{ .Name }} <wait>",
+        "netcfg/get_domain=vagrantup.com <wait>",
+        "fb=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "console-setup/layoutcode=us <wait>",
+        "console-setup/modelcode=pc105 <wait>",
+        "keyboard-configuration/variant=USA <wait>",
+        "keyboard-configuration/layout=USA <wait>",
+        "grub-installer/bootdev=/dev/sda <wait>",
+        "noapic <wait>",
+        "-- <wait>",
+        "<enter><wait>"
+      ],
+      "boot_wait": "5s",
+      "headless": true,
+      "disk_size": "{{user `disk_size`}}",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "Ubuntu_64",
+      "http_directory": "http",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "http://cdimages.ubuntu.com/ubuntu/releases/{{user `ubuntu_version`}}/release/ubuntu-{{user `ubuntu_version`}}-server-amd64.iso",
+      "shutdown_command": "echo '{{user `ssh_pass`}}' | sudo -S /sbin/shutdown -hP now",
+      "ssh_username": "{{user `ssh_user`}}",
+      "ssh_password": "{{user `ssh_pass`}}",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "{{user `ssh_wait_timeout`}}",
+      "type": "virtualbox-iso",
+      "vm_name": "ubuntu-{{user `ubuntu_version`}}-{{user `vm_name`}}",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cores`}}"],
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+        ["modifyvm", "{{.Name}}", "--paravirtprovider", "kvm"],
+        ["modifyvm", "{{.Name}}", "--nictype1", "virtio"],
+        ["modifyvm", "{{.Name}}", "--vram", "24"]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "expect_disconnect": "true",
+      "execute_command": "echo '{{user `ssh_pass`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "script": "scripts/base.sh"
+    },
+    {
+      "type": "shell",
+      "pause_before": "30s",
+      "execute_command": "echo '{{user `ssh_pass`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "scripts/vmtool.sh",
+        "scripts/vagrant.sh",
+        "scripts/devel.sh",
+        "scripts/ansible.sh",
+        "scripts/cleanup.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    [{
+      "type": "vagrant",
+      "compression_level": 9,
+      "output": "./boxes/ubuntu-{{user `ubuntu_version`}}-{{user `vm_name`}}-vbox.box",
+      "keep_input_artifact": false
+    },
+    {
+      "type": "vagrant-cloud",
+      "box_tag": "caio2k/ubuntu1804",
+      "access_token": "{{user `cloud_token`}}",
+      "version": "{{user `ubuntu_version`}}-0",
+      "no_release": "true"
+    }]
+  ]
+}
+
