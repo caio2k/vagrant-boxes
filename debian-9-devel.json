@@ -7,8 +7,8 @@
     "ssh_user": "vagrant",
     "ssh_pass": "vagrant",
     "ssh_wait_timeout": "10000s",
-    "debian_version": "9.7.0",
-    "iso_checksum": "87368242b8332a9ae6ddf48c5265c6618cbbca0497ced6ab1c05c674ac7a7f6aac2adff0534e65976b7d8bfddf4e4e87046190b01f61fecf8a9d75ca49cc7cdf",
+    "debian_version": "9.8.0",
+    "iso_checksum": "cc4a6bd50925c1c4af98049060e304494bc9da61eb5eb272c556d67608de14d4e6a4b8bc1c9412a0f810083912e228569f3771ffffa7174538f3e26f45a05245",
     "vm_name": "devel"
   },
   "builders": [
