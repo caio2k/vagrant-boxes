@@ -7,8 +7,8 @@
     "ssh_user": "vagrant",
     "ssh_pass": "vagrant",
     "ssh_wait_timeout": "10000s",
-    "debian_version": "8.11.0",
-    "iso_checksum": "28641eb3f657a71fccc1506b2953b4f3130937cdcff686162a882bc045ad32482ec4b5eb3d2d711d59cdd610e338579776e96a11895d51bbe88e831fa3d8a7af",
+    "debian_version": "10.0.0-a5",
+    "iso_checksum": "2e0678ca5bd286aebc42584f0898904830b82aa60733880a5cb0467f480f8556eaf4335f51b11b00b58adf160f279803af2f54b893e1c587ec5b1a90774584d2",
     "vm_name": "devel"
   },
   "builders": [
@@ -16,7 +16,7 @@
       "boot_command": [
         "<esc><wait>",
         "install <wait>",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian8.cfg <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian10.cfg <wait>",
         "debian-installer=en_US <wait>",
         "auto <wait>",
         "locale=en_US <wait>",
@@ -33,6 +33,7 @@
         "passwd/username={{user `ssh_user`}} <wait>",
         "passwd/user-password=\"{{user `ssh_pass`}}\" <wait>",
         "passwd/user-password-again=\"{{user `ssh_pass`}}\" <wait>",
+        "net.ifnames=0 <wait>",
         "<enter><wait>"
       ],
       "boot_wait": "10s",
@@ -43,7 +44,7 @@
       "http_directory": "http",
       "iso_checksum_type": "sha512",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/{{user `debian_version`}}/amd64/iso-cd/debian-{{user `debian_version`}}-amd64-netinst.iso",
+      "iso_url": "https://cdimage.debian.org/mirror/cdimage/buster_di_alpha5/amd64/iso-cd/debian-buster-DI-alpha5-amd64-netinst.iso",
       "shutdown_command": "echo '{{user `ssh_pass`}}' | sudo -S /sbin/shutdown -hP now",
       "ssh_username": "{{user `ssh_user`}}",
       "ssh_password": "{{user `ssh_pass`}}",
@@ -64,9 +65,15 @@
   "provisioners": [
     {
       "type": "shell",
+      "expect_disconnect": "true",
+      "execute_command": "echo '{{user `ssh_pass`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "script": "scripts/base.sh"
+    },
+    {
+      "type": "shell",
+      "pause_before": "30s",
       "execute_command": "echo '{{user `ssh_pass`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
       "scripts": [
-        "scripts/base.sh",
         "scripts/vmtool.sh",
         "scripts/vagrant.sh",
         "scripts/devel.sh",
@@ -84,7 +91,7 @@
     },
     {
       "type": "vagrant-cloud",
-      "box_tag": "caio2k/debian8-devel",
+      "box_tag": "caio2k/debian10-devel",
       "access_token": "{{user `cloud_token`}}",
       "version": "{{user `debian_version`}}-0",
       "no_release": "true"

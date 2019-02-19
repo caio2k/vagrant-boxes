@@ -32,22 +32,27 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       chown -R vagrant $USER_HOME/.config
 
     elif (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^9\.'` ) ||
+         (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^10\.'`) ||
+         (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^testing\.'`) ||
          (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^16\.'`) ||
          (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^17\.'`) ||
          (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^18\.'`) ; then
       USER_HOME='/home/vagrant'
       #apt-friendly apps
       ##docker
-      curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
-      echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+      if ! (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^10\.'`); then
+        #debian10 comes with latest docker
+        curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+        echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+        apt-get update
+        apt-get install -y docker-ce
+      fi
 
       ##vscode - cannot be seeded due to non-standard gpg
       curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
       echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list
-
-      ##install them
       apt-get update
-      apt-get install -y docker-ce code
+      apt-get install -y code
 
       #snap-friendly apps
       snap install intellij-idea-community --classic
@@ -64,7 +69,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
     fi
 
     # Development tools common in debians/ubuntus
-    apt-get install -y git
+    apt-get install -y golang
     apt-get install -y python-minimal
     apt-get install -y python-pip
     apt-get install -y python3-minimal

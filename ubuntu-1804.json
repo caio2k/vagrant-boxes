@@ -92,7 +92,7 @@
     },
     {
       "type": "vagrant-cloud",
-      "box_tag": "caio2k/ubuntu1804",
+      "box_tag": "caio2k/ubuntu1804-devel",
       "access_token": "{{user `cloud_token`}}",
       "version": "{{user `ubuntu_version`}}-0",
       "no_release": "true"

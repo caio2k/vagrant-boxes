@@ -1,7 +1,7 @@
 #!/bin/bash
 #by caio2k
 
-export PATH=/mnt/nas/devel/devops/packer:$PATH
+IMAGE_TO_BUILD=${1-debian-10-devel.json}
 
 : ${BUILD_VERSION:="v$(date +'%Y%m%d')"}
 export BUILD_VERSION

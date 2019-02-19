@@ -4,40 +4,42 @@
 echo "Launching vmtool script"
 if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
   if [[ $OSTYPE == "linux-gnu" ]]; then
+    if   (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^8\.'` ) ||
+         (`lsb_release -i -s | grep -q Redhat` ) ; then
 
-    echo "installing required packages"
-    if [[ -f /etc/redhat-release ]]; then
-      yum -y install gcc-c++ kernel-devel-`uname -r` kernel-headers perl bzip2
-      VBOX_ADDITIONS_HOME=/root
-    elif [[ -f /etc/debian_version ]]; then
-      apt-get install -y linux-headers-$(uname -r) build-essential perl
-      apt-get install -y dkms
-      VBOX_ADDITIONS_HOME=/home/vagrant
+      echo "installing required packages"
+      if [[ -f /etc/redhat-release ]]; then
+        yum -y install gcc-c++ kernel-devel-`uname -r` kernel-headers perl bzip2
+        VBOX_ADDITIONS_HOME=/root
+      elif [[ -f /etc/debian_version ]]; then
+        apt-get install -y linux-headers-$(uname -r) build-essential perl
+        apt-get install -y dkms
+        VBOX_ADDITIONS_HOME=/home/vagrant
+      fi
+
+      echo "compiling vbox guest additions"
+      VBOX_VERSION=$(cat $VBOX_ADDITIONS_HOME/.vbox_version)
+
+      mount -o loop $VBOX_ADDITIONS_HOME/VBoxGuestAdditions_$VBOX_VERSION.iso /mnt
+      cd /tmp
+      sh /mnt/VBoxLinuxAdditions.run
+      umount /mnt
+      rm -f $VBOX_ADDITIONS_HOME/VBoxGuestAdditions_*.iso
+
+      if [[ $VBOX_VERSION = "4.3.10" ]]; then
+        ln -s /opt/VBoxGuestAdditions-4.3.10/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditions
+      fi
+      
+      echo "uninstalling required packages and disabling uneeded service"
+      if [[ -f /etc/redhat-release ]]; then
+        chkconfig vboxadd-x11 off
+        yum -y remove gcc-c++ kernel-devel-`uname -r` kernel-headers perl
+      elif [[ -f /etc/debian_version ]]; then
+        apt-get -y remove linux-headers-$(uname -r) build-essential perl dkms
+      fi
     fi
-
-    echo "compiling vbox guest additions"
-    VBOX_VERSION=$(cat $VBOX_ADDITIONS_HOME/.vbox_version)
-
-    mount -o loop $VBOX_ADDITIONS_HOME/VBoxGuestAdditions_$VBOX_VERSION.iso /mnt
-    cd /tmp
-    sh /mnt/VBoxLinuxAdditions.run
-    umount /mnt
-    rm -f $VBOX_ADDITIONS_HOME/VBoxGuestAdditions_*.iso
-
-    if [[ $VBOX_VERSION = "4.3.10" ]]; then
-      ln -s /opt/VBoxGuestAdditions-4.3.10/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditions
-    fi
-    
     echo "adding user vagrant into group vboxsf"
     usermod -a -G vboxsf vagrant
-    
-    echo "uninstalling required packages and disabling uneeded service"
-    if [[ -f /etc/redhat-release ]]; then
-      chkconfig vboxadd-x11 off
-      yum -y remove gcc-c++ kernel-devel-`uname -r` kernel-headers perl
-    elif [[ -f /etc/debian_version ]]; then
-      apt-get -y remove linux-headers-$(uname -r) build-essential perl dkms
-    fi
   elif [[ $OSTYPE =~ "solaris" ]]; then
     echo "Installing VirtualBox Guest Additions"
     echo "mail=\ninstance=overwrite\npartial=quit" > /tmp/noask.admin
