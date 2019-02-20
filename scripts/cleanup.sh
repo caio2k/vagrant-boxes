@@ -14,7 +14,7 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
       sed -i /HWADDR/d /etc/sysconfig/network-scripts/ifcfg-eth0
       rm -f /etc/udev/rules.d/70-persistent-net.rules /etc/udev/rules.d/70-persistent-cd.rules /lib/udev/rules.d/75-persistent-net-generator.rules
 
-    elif [[ -f /etc/debian_version ]]; then
+    elif (`lsb_release -i -s | grep -q Debian`); then
       apt-get --yes autoremove
       apt-get --yes clean
       rm -rf /dev/.udev/
@@ -23,7 +23,11 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
       if [[ -d "/var/lib/dhcp" ]]; then
           rm /var/lib/dhcp/*
       fi
- 
+
+    elif (`lsb_release -i -s | grep -q Ubuntu`); then
+      apt-get --yes remove gnome-initial-setup ubuntu-web-launchers
+      apt-get --yes autoremove
+      apt-get --yes clean
     fi
     rm -rf /tmp/*
 

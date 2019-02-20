@@ -2,7 +2,7 @@
   "min_packer_version": "1.3.0",
   "variables": {
     "cores": "2",
-    "memory": "512",
+    "memory": "2048",
     "disk_size": "10140",
     "ssh_user": "vagrant",
     "ssh_pass": "vagrant",
@@ -41,6 +41,7 @@
       "boot_wait": "5s",
       "headless": true,
       "disk_size": "{{user `disk_size`}}",
+      "hard_drive_interface": "sata",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "guest_os_type": "Ubuntu_64",
       "http_directory": "http",
@@ -58,8 +59,11 @@
         ["modifyvm", "{{.Name}}", "--cpus", "{{user `cores`}}"],
         ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
         ["modifyvm", "{{.Name}}", "--paravirtprovider", "kvm"],
-        ["modifyvm", "{{.Name}}", "--nictype1", "virtio"],
-        ["modifyvm", "{{.Name}}", "--vram", "24"]
+        ["modifyvm", "{{.Name}}", "--nictype1", "82540EM"],
+        ["modifyvm", "{{.Name}}", "--audio", "none"],
+        ["modifyvm", "{{.Name}}", "--usb", "off"],
+        ["modifyvm", "{{.Name}}", "--vrde", "off"],
+        ["modifyvm", "{{.Name}}", "--vram", "128"]
       ]
     }
   ],

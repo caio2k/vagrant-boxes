@@ -38,14 +38,15 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
          (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^17\.'`) ||
          (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^18\.'`) ; then
       USER_HOME='/home/vagrant'
+
       #apt-friendly apps
       ##docker
       if ! (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^10\.'`); then
         #debian10 comes with latest docker
-        curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
-        echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+        curl -fsSL https://download.docker.com/linux/`lsb_release -i -s | tr '[:upper:]' '[:lower:]'`/gpg | apt-key add -
+        echo "deb [arch=amd64] https://download.docker.com/linux/`lsb_release -i -s | tr '[:upper:]' '[:lower:]'` $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
         apt-get update
-        apt-get install -y docker-ce
+        apt-get install -y docker-ce docker-compose
       fi
 
       ##vscode - cannot be seeded due to non-standard gpg
@@ -65,6 +66,15 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       echo 'gtk-application-prefer-dark-theme=1' >> $USER_HOME/.config/gtk-3.0/settings.ini
       
       chown -R vagrant $USER_HOME/.config
+
+      if (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^18\.'`) ; then
+        # Disable animations
+        . <(dbus-launch --sh-syntax)
+        su -c 'gsettings set org.gnome.desktop.interface enable-animations false' vagrant
+        su -c 'gsettings set org.gnome.desktop.lockdown disable-lock-screen true' vagrant
+        # Auto login as vagrant
+        sed -i 's:#.*AutomaticLogin:AutomaticLogin:g;s:user1:vagrant:g' /etc/gdm3/custom.conf
+      fi
 
     fi
 
