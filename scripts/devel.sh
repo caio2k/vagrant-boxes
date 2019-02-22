@@ -41,12 +41,29 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
 
       #apt-friendly apps
       ##docker
+      usermod -aG docker vagrant
       if ! (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^10\.'`); then
-        #debian10 comes with latest docker
+        #ignore debian10 as it comes with latest docker
         curl -fsSL https://download.docker.com/linux/`lsb_release -i -s | tr '[:upper:]' '[:lower:]'`/gpg | apt-key add -
         echo "deb [arch=amd64] https://download.docker.com/linux/`lsb_release -i -s | tr '[:upper:]' '[:lower:]'` $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
         apt-get update
         apt-get install -y docker-ce docker-compose
+
+        #ignore debian10 as it comes with latest golang
+        apt-get remove -y golang
+        if [ ! -d "/opt/go" ] ; then
+          # Download and install GO
+          wget https://dl.google.com/go/go1.11.5.linux-amd64.tar.gz -O /tmp/go.tar.gz
+          tar zxvf /tmp/go.tar.gz --directory /opt/
+        fi
+        # When you execute go GET you need these defined path.
+        echo '# Go settings' > /etc/profile.d/go.sh
+        echo 'export GOROOT=/opt/go' >> /etc/profile.d/go.sh
+        echo 'export GOPATH=$HOME/dev/go'  >> /etc/profile.d/go.sh
+        echo 'export PATH=$PATH:$GOPATH/bin:$GOROOT/bin' >> /etc/profile.d/go.sh
+        echo 'mkdir -p $GOPATH' >> /etc/profile.d/go.sh
+
+        chmod +x /etc/profile.d/go.sh
       fi
 
       ##vscode - cannot be seeded due to non-standard gpg
@@ -54,11 +71,21 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list
       apt-get update
       apt-get install -y code
+      # Install vscode go extension
+      su -c "code --install-extension ms-vscode.go" vagrant
+      # Increment maximum number of watches
+      echo "fs.inotify.max_user_watches=524288" > /etc/sysctl.d/60-max_user_watches.conf
+      sysctl -p
 
       #snap-friendly apps
       snap install intellij-idea-community --classic
       snap install pycharm-community --classic
+      snap install goland --classic
 
+      #install aws stuff
+      apt-get -y install awscli
+      curl -fsSL https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest -o /usr/local/bin/ecs-cli
+      chmod +x /usr/local/bin/ecs-cli
       ln -s $USER_HOME/.Xauthority /root/
 
       mkdir -p $USER_HOME/.config/gtk-3.0/
@@ -72,14 +99,13 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
         . <(dbus-launch --sh-syntax)
         su -c 'gsettings set org.gnome.desktop.interface enable-animations false' vagrant
         su -c 'gsettings set org.gnome.desktop.lockdown disable-lock-screen true' vagrant
+        su -c 'gsettings set org.gnome.desktop.screensaver lock-enabled false' vagrant
         # Auto login as vagrant
         sed -i 's:#.*AutomaticLogin:AutomaticLogin:g;s:user1:vagrant:g' /etc/gdm3/custom.conf
       fi
-
     fi
 
     # Development tools common in debians/ubuntus
-    apt-get install -y golang
     apt-get install -y python-minimal
     apt-get install -y python-pip
     apt-get install -y python3-minimal
