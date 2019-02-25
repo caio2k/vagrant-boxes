@@ -53,7 +53,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
         apt-get remove -y golang
         if [ ! -d "/opt/go" ] ; then
           # Download and install GO
-          wget https://dl.google.com/go/go1.11.5.linux-amd64.tar.gz -O /tmp/go.tar.gz
+          curl -fsSL https://dl.google.com/go/go1.11.5.linux-amd64.tar.gz -o /tmp/go.tar.gz
           tar zxvf /tmp/go.tar.gz --directory /opt/
         fi
         # When you execute go GET you need these defined path.
@@ -86,6 +86,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       apt-get -y install awscli
       curl -fsSL https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest -o /usr/local/bin/ecs-cli
       chmod +x /usr/local/bin/ecs-cli
+
       ln -s $USER_HOME/.Xauthority /root/
 
       mkdir -p $USER_HOME/.config/gtk-3.0/
