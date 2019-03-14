@@ -4,14 +4,16 @@
     "build_version": "{{env `BUILD_VERSION`}}",
     "iso_mirror": "http://ftp.cixug.es/CentOS",
     "ssh_password": "vagrant",
-    "version_number": "7.6",
+    "box_name": "centos",
+    "distro_version": "7.6",
     "version_date": "1810",
     "iso_checksum": "38d5d51d9d100fd73df031ffd6bd8b1297ce24660dc8c13a3b8b4534a4bd291c",
-    "cloud_token": "{{ env `ATLAS_TOKEN`}}"
+    "vm_name": "{{ env `BUILDNAME`}}"
   },
   "builders": [
     {
-      "name": "CentOS-{{user `version_number`}}-x86_64-{{user `build_version`}}",
+      "name": "{{user `vm_name`}}",
+      "vm_name": "{{user `vm_name`}}",
       "type": "virtualbox-iso",
       "guest_os_type": "RedHat_64",
       "iso_url": "{{user `iso_mirror`}}/7/isos/x86_64/CentOS-7-x86_64-Minimal-{{user `version_date`}}.iso",
@@ -59,14 +61,14 @@
     [{
       "type": "vagrant",
       "compression_level": 9,
-      "output": "./boxes/{{.BuildName}}.box",
+      "output": "./boxes/{{user `vm_name`}}-vbox.box",
       "keep_input_artifact": false
     },
     {
       "type": "vagrant-cloud",
-      "box_tag": "caio2k/centos7",
+      "box_tag": "caio2k/centos",
       "access_token": "{{user `cloud_token`}}",
-      "version": "{{user `version_number`}}-{{user `version_date`}}",
+      "version": "{{user `distro_version`}}-0",
       "no_release": "true"
     }]
 

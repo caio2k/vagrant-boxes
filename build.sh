@@ -1,17 +1,18 @@
 #!/bin/bash
 #by caio2k
 
-IMAGE_TO_BUILD=${1-debian-10-devel.json}
+JSON_TO_BUILD=${1-debian-10-devel.json}
+BUILDPREFIX=`grep '"box_name"' "$JSON_TO_BUILD" | sed 's/"//g;s/,//g;s/.*: //g'`-`grep '"distro_version"' "$JSON_TO_BUILD" | sed 's/"//g;s/,//g;s/-.*//g;s/.*: //g;s/\.[0-9]*$//g'`
+BUILDDATE=`date +'%Y%m%d'`
+export BUILDNAME=${BUILDPREFIX}.${BUILDDATE}
 
-: ${BUILD_VERSION:="v$(date +'%Y%m%d')"}
-export BUILD_VERSION
+echo "launchig packer to build $BUILDNAME"
+
 #fix to vbox 5.1.38
 export PACKER_KEY_INTERVAL=150ms
 
-IMAGE_TO_BUILD=${1-debian-10-devel.json}
-
 mkdir -p boxes
-rm -f boxes/*-${BUILD_VERSION}.box #2>/dev/null
-packer build ${IMAGE_TO_BUILD}
-cd boxes
-openssl sha1 *-${BUILD_VERSION}.box
+rm -f boxes/${BUILDPREFIX}-*.box #2>/dev/null
+time packer build ${JSON_TO_BUILD} | tee "boxes/$BUILDNAME.log" && \
+cd boxes && \
+openssl sha1 packer-${BUILD_VERSION}.box

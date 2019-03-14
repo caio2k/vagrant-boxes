@@ -12,12 +12,16 @@
     "rsync_proxy": "{{env `rsync_proxy`}}",
     "ssh_password": "vagrant",
     "ssh_username": "vagrant",
+    "box_name": "centos",
+    "distro_version": "6.10",
     "update": "false",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "vm_name": "{{ env `BUILDNAME`}}"
   },
   "builders": [
     {
-      "name": "CentOS-6.10-x86_64-{{user `build_version`}}",
+      "name": "{{user `vm_name`}}",
+      "vm_name": "{{user `vm_name`}}",
       "type": "virtualbox-iso",
       "guest_os_type": "RedHat_64",
       "iso_url": "{{user `iso_mirror`}}/6.10/isos/x86_64/CentOS-6.10-x86_64-minimal.iso",
@@ -65,14 +69,14 @@
     [{
       "type": "vagrant",
       "compression_level": 9,
-      "output": "./boxes/{{.BuildName}}.box",
+      "output": "./boxes/{{user `vm_name`}}-vbox.box",
       "keep_input_artifact": false
     },
     {
       "type": "vagrant-cloud",
-      "box_tag": "caio2k/centos6",
+      "box_tag": "caio2k/centos",
       "access_token": "{{user `cloud_token`}}",
-      "version": "{{user `version_number`}}-{{user `version_date`}}",
+      "version": "{{user `distro_version`}}-0",
       "no_release": "true"
     }]
   ]

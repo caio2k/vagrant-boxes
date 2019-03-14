@@ -3,13 +3,14 @@
   "variables": {
     "cores": "2",
     "memory": "2048",
-    "disk_size": "10140",
+    "disk_size": "20280",
     "ssh_user": "vagrant",
     "ssh_pass": "vagrant",
     "ssh_wait_timeout": "10000s",
-    "ubuntu_version": "18.04.2",
+    "box_name": "ubuntu-devel",
+    "distro_version": "18.04.2",
     "iso_checksum": "a2cb36dc010d98ad9253ea5ad5a07fd6b409e3412c48f1860536970b073c98f5",
-    "vm_name": "devel"
+    "vm_name": "{{ env `BUILDNAME`}}"
   },
   "builders": [
     {
@@ -38,23 +39,27 @@
         "-- <wait>",
         "<enter><wait>"
       ],
+      "name": "{{user `vm_name`}}",
+      "vm_name": "{{user `vm_name`}}",
       "boot_wait": "5s",
       "headless": true,
       "disk_size": "{{user `disk_size`}}",
       "hard_drive_interface": "sata",
-      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "sata_port_count": 4,
+      "hard_drive_nonrotational": true,
+      "hard_drive_discard": true,
+      "guest_additions_mode": "disable",
       "guest_os_type": "Ubuntu_64",
       "http_directory": "http",
       "iso_checksum_type": "sha256",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "iso_url": "http://cdimages.ubuntu.com/ubuntu/releases/{{user `ubuntu_version`}}/release/ubuntu-{{user `ubuntu_version`}}-server-amd64.iso",
+      "iso_url": "http://cdimages.ubuntu.com/ubuntu/releases/{{user `distro_version`}}/release/ubuntu-{{user `distro_version`}}-server-amd64.iso",
       "shutdown_command": "echo '{{user `ssh_pass`}}' | sudo -S /sbin/shutdown -hP now",
       "ssh_username": "{{user `ssh_user`}}",
       "ssh_password": "{{user `ssh_pass`}}",
       "ssh_port": 22,
       "ssh_wait_timeout": "{{user `ssh_wait_timeout`}}",
       "type": "virtualbox-iso",
-      "vm_name": "ubuntu-{{user `ubuntu_version`}}-{{user `vm_name`}}",
       "vboxmanage": [
         ["modifyvm", "{{.Name}}", "--cpus", "{{user `cores`}}"],
         ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
@@ -91,14 +96,14 @@
     [{
       "type": "vagrant",
       "compression_level": 9,
-      "output": "./boxes/ubuntu-{{user `ubuntu_version`}}-{{user `vm_name`}}-vbox.box",
+      "output": "./boxes/{{user `vm_name`}}-vbox.box",
       "keep_input_artifact": false
     },
     {
       "type": "vagrant-cloud",
-      "box_tag": "caio2k/ubuntu1804-devel",
+      "box_tag": "caio2k/ubuntu-devel",
       "access_token": "{{user `cloud_token`}}",
-      "version": "{{user `ubuntu_version`}}-0",
+      "version": "{{user `distro_version`}}-0",
       "no_release": "true"
     }]
   ]

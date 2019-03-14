@@ -4,16 +4,22 @@
 echo "Launching vmtool script"
 if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
   if [[ $OSTYPE == "linux-gnu" ]]; then
-    if   (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^8\.'` ) ||
-         (`lsb_release -i -s | grep -q Redhat` ) ; then
-
+    if (`lsb_release -i -s | grep -q Debian` ) && [[ -f /etc/apt/sources.list.d/backports.list ]] ; then
+      apt-get -t `lsb_release -c -s`-backports -y install virtualbox-guest-x11
+    elif (`lsb_release -i -s | grep -q Debian` ); then
+      apt-get -y install virtualbox-guest-x11
+    elif (`lsb_release -i -s | grep -q Ubuntu` ); then
+      apt-get -y install -t disco virtualbox-guest-utils-hwe virtualbox-guest-x11-hwe
+#      apt remove --purge linux-image-generic
+    #debian should always use debs to manage vbox guest, but I left below the option to install latest into debian as well
+    elif (`lsb_release -i -s | grep -q Redhat` ) ; then
       echo "installing required packages"
       if [[ -f /etc/redhat-release ]]; then
         yum -y install gcc-c++ kernel-devel-`uname -r` kernel-headers perl bzip2
         VBOX_ADDITIONS_HOME=/root
       elif [[ -f /etc/debian_version ]]; then
-        apt-get install -y linux-headers-$(uname -r) build-essential perl
-        apt-get install -y dkms
+        apt-get -y install linux-headers-$(uname -r) perl
+        apt-get -y install dkms
         VBOX_ADDITIONS_HOME=/home/vagrant
       fi
 
@@ -35,7 +41,7 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
         chkconfig vboxadd-x11 off
         yum -y remove gcc-c++ kernel-devel-`uname -r` kernel-headers perl
       elif [[ -f /etc/debian_version ]]; then
-        apt-get -y remove linux-headers-$(uname -r) build-essential perl dkms
+        apt-get -y remove linux-headers-$(uname -r) perl dkms
       fi
     fi
     echo "adding user vagrant into group vboxsf"
