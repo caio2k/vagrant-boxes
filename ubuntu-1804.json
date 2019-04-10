@@ -8,6 +8,8 @@
     "ssh_pass": "vagrant",
     "ssh_wait_timeout": "10000s",
     "box_name": "ubuntu-devel",
+    "box_builddate": "{{ env `BUILDDATE`}}",
+    "box_version": "1804.2",
     "distro_version": "18.04.2",
     "iso_checksum": "a2cb36dc010d98ad9253ea5ad5a07fd6b409e3412c48f1860536970b073c98f5",
     "vm_name": "{{ env `BUILDNAME`}}"
@@ -103,7 +105,7 @@
       "type": "vagrant-cloud",
       "box_tag": "caio2k/ubuntu-devel",
       "access_token": "{{user `cloud_token`}}",
-      "version": "{{user `distro_version`}}-0",
+      "version": "{{user `box_version`}}.{{ user `box_builddate`}}",
       "no_release": "true"
     }]
   ]

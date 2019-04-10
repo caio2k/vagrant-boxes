@@ -5,6 +5,8 @@
     "iso_mirror": "http://ftp.cixug.es/CentOS",
     "ssh_password": "vagrant",
     "box_name": "centos",
+    "box_builddate": "{{ env `BUILDDATE`}}",
+    "box_version": "7.6",
     "distro_version": "7.6",
     "version_date": "1810",
     "iso_checksum": "38d5d51d9d100fd73df031ffd6bd8b1297ce24660dc8c13a3b8b4534a4bd291c",
@@ -68,7 +70,7 @@
       "type": "vagrant-cloud",
       "box_tag": "caio2k/centos",
       "access_token": "{{user `cloud_token`}}",
-      "version": "{{user `distro_version`}}-0",
+      "version": "{{user `box_version`}}.{{ user `box_builddate`}}",
       "no_release": "true"
     }]
 

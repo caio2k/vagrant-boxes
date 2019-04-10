@@ -13,6 +13,8 @@
     "ssh_password": "vagrant",
     "ssh_username": "vagrant",
     "box_name": "solaris",
+    "box_builddate": "{{ env `BUILDDATE`}}",
+    "box_version": "11.3",
     "distro_version": "11.3",
     "update": "false",
     "version": "0.1.0"

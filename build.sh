@@ -2,8 +2,8 @@
 #by caio2k
 
 JSON_TO_BUILD=${1-debian-10-devel.json}
-BUILDPREFIX=`grep '"box_name"' "$JSON_TO_BUILD" | sed 's/"//g;s/,//g;s/.*: //g'`-`grep '"distro_version"' "$JSON_TO_BUILD" | sed 's/"//g;s/,//g;s/-.*//g;s/.*: //g;s/\.[0-9]*$//g'`
-BUILDDATE=`date +'%Y%m%d'`
+BUILDPREFIX=`grep '"box_name"' "$JSON_TO_BUILD" | sed 's/"//g;s/,//g;s/.*: //g'`-`grep '"box_version"' "$JSON_TO_BUILD" | sed 's/"//g;s/,//g;s/-.*//g;s/.*: //g'`
+export BUILDDATE=`date +'%Y%m%d'`
 export BUILDNAME=${BUILDPREFIX}.${BUILDDATE}
 
 echo "launchig packer to build $BUILDNAME"

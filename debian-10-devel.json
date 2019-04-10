@@ -8,6 +8,8 @@
     "ssh_pass": "vagrant",
     "ssh_wait_timeout": "10000s",
     "box_name": "debian-devel",
+    "box_builddate": "{{ env `BUILDDATE`}}",
+    "box_version": "10.0",
     "distro_version": "10.0.0-a5",
     "iso_checksum": "2e0678ca5bd286aebc42584f0898904830b82aa60733880a5cb0467f480f8556eaf4335f51b11b00b58adf160f279803af2f54b893e1c587ec5b1a90774584d2",
     "vm_name": "{{ env `BUILDNAME`}}"
@@ -98,7 +100,7 @@
       "type": "vagrant-cloud",
       "box_tag": "caio2k/debian-devel",
       "access_token": "{{user `cloud_token`}}",
-      "version": "{{user `distro_version`}}-0",
+      "version": "{{user `box_version`}}.{{ user `box_builddate`}}",
       "no_release": "true"
     }]
   ]

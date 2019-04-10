@@ -10,11 +10,11 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
     yum -y install nfs-utils nfs-utils-lib
     yum -y remove epel-release
   elif [[ -f /etc/debian_version ]]; then
-    apt-get -y install sshpass
+    DEBIAN_FRONTEND=noninteractive apt-get -y install sshpass
     if (`lsb_release -i -s | grep -q Debian` ) && [[ -f /etc/apt/sources.list.d/backports.list ]] ; then
       apt-get -t `lsb_release -c -s`-backports -y install ansible
     else
-      apt-get -y install ansible
+      DEBIAN_FRONTEND=noninteractive apt-get -y install ansible
     fi
   fi
 elif [[ $OSTYPE == "solaris" ]]; then

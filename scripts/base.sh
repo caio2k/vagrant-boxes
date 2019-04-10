@@ -56,7 +56,7 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
       mkdir /tmp/apt-cache
       mount -o bind /tmp/apt-cache /var/cache/apt/archives
       apt-get -y update
-      apt-get -y upgrade
+      DEBIAN_FRONTEND=noninteractive apt-get -y upgrade --with-new-pkgs
     fi
 
     # Make ssh faster by not waiting on DNS

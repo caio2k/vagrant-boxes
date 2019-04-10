@@ -13,6 +13,8 @@
     "ssh_password": "vagrant",
     "ssh_username": "vagrant",
     "box_name": "centos",
+    "box_builddate": "{{ env `BUILDDATE`}}",
+    "box_version": "6.10",
     "distro_version": "6.10",
     "update": "false",
     "version": "0.1.0",
@@ -76,7 +78,7 @@
       "type": "vagrant-cloud",
       "box_tag": "caio2k/centos",
       "access_token": "{{user `cloud_token`}}",
-      "version": "{{user `distro_version`}}-0",
+      "version": "{{user `box_version`}}.{{ user `box_builddate`}}",
       "no_release": "true"
     }]
   ]

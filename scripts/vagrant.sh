@@ -7,7 +7,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
     #this is to enable NFS mouting in vagrant
     yum -y install nfs-utils nfs-utils-lib
   elif [[ -f /etc/debian_version ]]; then
-    apt-get -y install wget
+    DEBIAN_FRONTEND=noninteractive apt-get -y install wget
   fi
 
   # Vagrant specific

@@ -7,9 +7,9 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
     if (`lsb_release -i -s | grep -q Debian` ) && [[ -f /etc/apt/sources.list.d/backports.list ]] ; then
       apt-get -t `lsb_release -c -s`-backports -y install virtualbox-guest-x11
     elif (`lsb_release -i -s | grep -q Debian` ); then
-      apt-get -y install virtualbox-guest-x11
+      DEBIAN_FRONTEND=noninteractive apt-get -y install virtualbox-guest-x11
     elif (`lsb_release -i -s | grep -q Ubuntu` ); then
-      apt-get -y install -t disco virtualbox-guest-utils-hwe virtualbox-guest-x11-hwe
+      DEBIAN_FRONTEND=noninteractive apt-get -y install -t disco virtualbox-guest-utils-hwe virtualbox-guest-x11-hwe
 #      apt remove --purge linux-image-generic
     #debian should always use debs to manage vbox guest, but I left below the option to install latest into debian as well
     elif (`lsb_release -i -s | grep -q Redhat` ) ; then
@@ -18,8 +18,8 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
         yum -y install gcc-c++ kernel-devel-`uname -r` kernel-headers perl bzip2
         VBOX_ADDITIONS_HOME=/root
       elif [[ -f /etc/debian_version ]]; then
-        apt-get -y install linux-headers-$(uname -r) perl
-        apt-get -y install dkms
+        DEBIAN_FRONTEND=noninteractive apt-get -y install linux-headers-$(uname -r) perl
+        DEBIAN_FRONTEND=noninteractive apt-get -y install dkms
         VBOX_ADDITIONS_HOME=/home/vagrant
       fi
 
