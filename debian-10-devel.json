@@ -9,9 +9,10 @@
     "ssh_wait_timeout": "10000s",
     "box_name": "debian-devel",
     "box_builddate": "{{ env `BUILDDATE`}}",
-    "box_version": "10.0",
-    "distro_version": "10.0.0-a5",
-    "iso_checksum": "2e0678ca5bd286aebc42584f0898904830b82aa60733880a5cb0467f480f8556eaf4335f51b11b00b58adf160f279803af2f54b893e1c587ec5b1a90774584d2",
+    "box_version": "9.8.0",
+    "distro_version": "10.0",
+    "distro_patch": "0",
+    "iso_checksum": "d808985468652393cf31d30fe7d6f60f5041337980b25dd00f2ab9553248b564cf38174c8251f410ddbe221e57fefc78849f9879141e25a5dfb31d8043fccc5c",
     "vm_name": "{{ env `BUILDNAME`}}"
   },
   "builders": [
@@ -42,7 +43,7 @@
       "name": "{{user `vm_name`}}",
       "vm_name": "{{user `vm_name`}}",
       "boot_wait": "10s",
-      "headless": false,
+      "headless": true,
       "disk_size": "{{user `disk_size`}}",
       "sata_port_count": 4,
       "hard_drive_nonrotational": true,
@@ -52,7 +53,7 @@
       "http_directory": "http",
       "iso_checksum_type": "sha512",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "iso_url": "https://cdimage.debian.org/mirror/cdimage/buster_di_alpha5/amd64/iso-cd/debian-buster-DI-alpha5-amd64-netinst.iso",
+      "iso_url": "https://cdimage.debian.org/mirror/cdimage/release/{{ user `distro_version` }}.{{ user `distro_patch` }}/amd64/iso-cd/debian-{{ user `distro_version` }}.{{ user `distro_patch` }}-amd64-netinst.iso",
       "shutdown_command": "echo '{{user `ssh_pass`}}' | sudo -S /sbin/shutdown -hP now",
       "ssh_username": "{{user `ssh_user`}}",
       "ssh_password": "{{user `ssh_pass`}}",
@@ -100,7 +101,7 @@
       "type": "vagrant-cloud",
       "box_tag": "caio2k/debian-devel",
       "access_token": "{{user `cloud_token`}}",
-      "version": "{{user `box_version`}}.{{ user `box_builddate`}}",
+      "version": "{{user `distro_version`}}.{{ user `box_builddate`}}",
       "no_release": "true"
     }]
   ]
