@@ -21,8 +21,13 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
       dpkg --purge apt-listchanges
       # Add backport support
       if (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^8\.'`) ||
-         (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^9\.'`) ; then
-        echo "deb http://ftp.de.debian.org/debian `lsb_release -c -s`-backports main contrib" > /etc/apt/sources.list.d/backports.list
+         (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^9\.'`) ||
+         (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^10$'`) ; then
+        echo "deb http://ftp.debian.org/debian `lsb_release -c -s`-backports main contrib" > /etc/apt/sources.list.d/backports.list
+        echo "deb http://ftp.debian.org/debian sid main contrib" > /etc/apt/sources.list.d/sid.list
+        echo 'Package: *'              >  /etc/apt/preferences.d/sid.pref
+        echo 'Pin: release a=unstable' >> /etc/apt/preferences.d/sid.pref
+        echo 'Pin-Priority: 50'        >> /etc/apt/preferences.d/sid.pref
       elif (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^18\.'`); then
         echo 'deb http://ubuntu.cica.es/ubuntu/ disco main restricted universe multiverse' > /etc/apt/sources.list.d/disco.list 
         echo 'Package: *'                     >  /etc/apt/preferences.d/disco.pref
@@ -55,7 +60,7 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
       #mount apt cache's as tmpfs
       mkdir /tmp/apt-cache
       mount -o bind /tmp/apt-cache /var/cache/apt/archives
-      apt-get -y update
+      DEBIAN_FRONTEND=noninteractive apt-get -y update
       DEBIAN_FRONTEND=noninteractive apt-get -y upgrade --with-new-pkgs
     fi
 

@@ -4,10 +4,14 @@
 echo "Launching vmtool script"
 if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
   if [[ $OSTYPE == "linux-gnu" ]]; then
-    if (`lsb_release -i -s | grep -q Debian` ) && [[ -f /etc/apt/sources.list.d/backports.list ]] ; then
-      apt-get -t `lsb_release -c -s`-backports -y install virtualbox-guest-x11
-    elif (`lsb_release -i -s | grep -q Debian` ); then
-      DEBIAN_FRONTEND=noninteractive apt-get -y install virtualbox-guest-x11
+    if (`lsb_release -i -s | grep -q Debian` ); then
+      REPO="stable"
+      if (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^9\.'`); then
+        REPO=`lsb_release -c -s`-backports
+      elif (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^10\.'`); then
+        REPO=sid
+      fi
+        DEBIAN_FRONTEND=noninteractive apt-get -y -t ${REPO} install virtualbox-guest-x11
     elif (`lsb_release -i -s | grep -q Ubuntu` ); then
       DEBIAN_FRONTEND=noninteractive apt-get -y install -t disco virtualbox-guest-utils-hwe virtualbox-guest-x11-hwe
 #      apt remove --purge linux-image-generic
@@ -41,7 +45,7 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
         chkconfig vboxadd-x11 off
         yum -y remove gcc-c++ kernel-devel-`uname -r` kernel-headers perl
       elif [[ -f /etc/debian_version ]]; then
-        apt-get -y remove linux-headers-$(uname -r) perl dkms
+        DEBIAN_FRONTEND=noninteractive apt-get -y remove linux-headers-$(uname -r) perl dkms
       fi
     fi
     echo "adding user vagrant into group vboxsf"

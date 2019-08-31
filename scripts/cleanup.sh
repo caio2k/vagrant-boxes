@@ -15,8 +15,8 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
       rm -f /etc/udev/rules.d/70-persistent-net.rules /etc/udev/rules.d/70-persistent-cd.rules /lib/udev/rules.d/75-persistent-net-generator.rules
 
     elif (`lsb_release -i -s | grep -q Debian`); then
-      apt-get --yes autoremove
-      apt-get --yes clean
+      DEBIAN_FRONTEND=noninteractive apt-get --yes autoremove
+      DEBIAN_FRONTEND=noninteractive apt-get --yes clean
       rm -rf /dev/.udev/
       rm -f /lib/udev/rules.d/75-persistent-net-generator.rules
       echo "pre-up sleep 2" >> /etc/network/interfaces
@@ -25,9 +25,9 @@ if [[ $PACKER_BUILDER_TYPE =~ virtualbox ]]; then
       fi
 
     elif (`lsb_release -i -s | grep -q Ubuntu`); then
-      apt-get --yes remove gnome-initial-setup ubuntu-web-launchers
-      apt-get --yes autoremove
-      apt-get --yes clean
+      DEBIAN_FRONTEND=noninteractive apt-get --yes remove gnome-initial-setup ubuntu-web-launchers
+      DEBIAN_FRONTEND=noninteractive apt-get --yes autoremove
+      DEBIAN_FRONTEND=noninteractive apt-get --yes clean
     fi
     rm -rf /tmp/*
 

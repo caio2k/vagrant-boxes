@@ -12,7 +12,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
   elif [[ -f /etc/debian_version ]]; then
     DEBIAN_FRONTEND=noninteractive apt-get -y install sshpass
     if (`lsb_release -i -s | grep -q Debian` ) && [[ -f /etc/apt/sources.list.d/backports.list ]] ; then
-      apt-get -t `lsb_release -c -s`-backports -y install ansible
+      DEBIAN_FRONTEND=noninteractive apt-get -t `lsb_release -c -s`-backports -y install ansible
     else
       DEBIAN_FRONTEND=noninteractive apt-get -y install ansible
     fi

@@ -7,7 +7,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
     
     #add i386 architecture
     dpkg --add-architecture i386
-    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get update
     
     #apt-friendly apps
     ##python2 and python3
@@ -15,8 +15,8 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
 
     ##debian8 only robotframework
     if (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^8\.'` ) ; then
-      apt-get --no-install-recommends -y install libgconf2-4:amd64 libgnome-2-0:amd64 libgnome2-0:amd64 libgnome2-bin:amd64 libgnome2-common:amd64 libgnomevfs2-0:amd64 libgnomevfs2-common:amd64 libgnomevfs2-extra:amd64 maven:amd64 acpi-support:amd64 mc:amd64 jython:amd64 mysql-client:amd64 mercurial:amd64 dos2unix:amd64 libxml-libxml-simple-perl:amd64 libxml-simple-perl:amd64 libxml-validator-schema-perl:amd64 libmime-lite-html-perl:amd64 libarchive-zip-perl:amd64 libhtml-display-perl:amd64 perl-tk:amd64 libsoap-lite-perl:amd64 libc6-i386:amd64 lib32z1:amd64 libssl1.0.0:i386 libxml2:i386 libnspr4:i386 libxslt1.1:i386 libstdc++6:i386 libgtk2.0-0:i386 libxtst6:i386 libasound2:i386 libxxf86vm1:i386 libimage-magick-perl:amd64 cifs-utils:amd64 gnome-terminal:amd64 java-package libxslt1.1
-      apt-get --no-install-recommends -t jessie-backports -y install libgl1-mesa-glx:i386
+      DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install libgconf2-4:amd64 libgnome-2-0:amd64 libgnome2-0:amd64 libgnome2-bin:amd64 libgnome2-common:amd64 libgnomevfs2-0:amd64 libgnomevfs2-common:amd64 libgnomevfs2-extra:amd64 maven:amd64 acpi-support:amd64 mc:amd64 jython:amd64 mysql-client:amd64 mercurial:amd64 dos2unix:amd64 libxml-libxml-simple-perl:amd64 libxml-simple-perl:amd64 libxml-validator-schema-perl:amd64 libmime-lite-html-perl:amd64 libarchive-zip-perl:amd64 libhtml-display-perl:amd64 perl-tk:amd64 libsoap-lite-perl:amd64 libc6-i386:amd64 lib32z1:amd64 libssl1.0.0:i386 libxml2:i386 libnspr4:i386 libxslt1.1:i386 libstdc++6:i386 libgtk2.0-0:i386 libxtst6:i386 libasound2:i386 libxxf86vm1:i386 libimage-magick-perl:amd64 cifs-utils:amd64 gnome-terminal:amd64 java-package libxslt1.1
+      DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -t jessie-backports -y install libgl1-mesa-glx:i386
       DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential wget python-wxgtk3.0
       pip install robotframework
       pip install -q https://github.com/HelioGuilherme66/RIDE/archive/v1.7.tar.gz
@@ -29,13 +29,13 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       sh -c "echo deb https://apt.dockerproject.org/repo debian-jessie main > /etc/apt/sources.list.d/docker.list"
       apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 
-      apt-get update
+      DEBIAN_FRONTEND=noninteractive apt-get update
       apt-cache policy docker-engine
       DEBIAN_FRONTEND=noninteractive apt-get -y install docker-engine
     else
       curl -fsSL https://download.docker.com/linux/`lsb_release -i -s | tr '[:upper:]' '[:lower:]'`/gpg | apt-key add -
       echo "deb [arch=amd64] https://download.docker.com/linux/`lsb_release -i -s | tr '[:upper:]' '[:lower:]'` $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
-      apt-get update
+      DEBIAN_FRONTEND=noninteractive apt-get update
       DEBIAN_FRONTEND=noninteractive apt-get -y install docker-ce docker-compose
     fi
     usermod -aG docker vagrant
@@ -44,10 +44,10 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
     if (`lsb_release -i -s | grep -q Ubuntu`); then
       #install from ppa repo to receive automatic updates
       add-apt-repository ppa:longsleep/golang-backports
-      apt-get update
+      DEBIAN_FRONTEND=noninteractive apt-get update
       DEBIAN_FRONTEND=noninteractive apt-get -y install golang-go
     elif (`lsb_release -i -s | grep -q Debian` ) && [[ -f /etc/apt/sources.list.d/backports.list ]] ; then
-      apt-get -t `lsb_release -c -s`-backports -y install golang
+      DEBIAN_FRONTEND=noninteractive apt-get -t `lsb_release -c -s`-backports -y install golang
     else
       DEBIAN_FRONTEND=noninteractive apt-get -y install golang
     fi
@@ -60,7 +60,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
     ##vscode - cannot be seeded due to non-standard gpg
     curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
     echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list
-    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get -y install code
     # Install vscode go extension
     su -c "code --install-extension ms-vscode.go" vagrant
@@ -74,7 +74,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       echo 'Pin: release a=stretch' >> /etc/apt/preferences.d/stretch.pref
       echo 'Pin-Priority: -10'       >> /etc/apt/preferences.d/stretch.pref
       echo "deb [arch=amd64] http://ftp.debian.org/debian stretch main" > /etc/apt/sources.list.d/stretch.list
-      apt-get update
+      DEBIAN_FRONTEND=noninteractive apt-get update
       DEBIAN_FRONTEND=noninteractive apt-get -y install -t stretch gstreamer1.0-plugins-base snapd
     else
       DEBIAN_FRONTEND=noninteractive apt-get -y install snapd

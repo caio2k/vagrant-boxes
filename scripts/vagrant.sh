@@ -36,7 +36,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
   if [[ -f /etc/redhat-release ]]; then
     yum -y remove wget
   elif [[ -f /etc/debian_version ]]; then
-    apt-get -y remove wget
+    DEBIAN_FRONTEND=noninteractive apt-get -y remove wget
     sed -i '/UsePAM/aUseDNS no' /etc/ssh/sshd_config
     sed -i '/env_reset/aDefaults        env_keep += "SSH_AUTH_SOCK"' /etc/sudoers;
     sed -i '/exit/i\/usr\/bin\/apt-get update' /etc/rc.local;

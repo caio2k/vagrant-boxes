@@ -3,4 +3,5 @@
 /packer/output-*
 /packer_cache
 /boxes/*.log
-output-*/
+/output-*/
+/tmp/
