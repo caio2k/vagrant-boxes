@@ -83,6 +83,7 @@
         "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><wait>",
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu1804.cfg <wait>",
         "initrd=/install/initrd.gz <wait>",
+        "net.ifnames=0 <wait>",
         "debian-installer=en_US <wait>",
         "auto <wait>",
         "locale=en_US <wait>",
