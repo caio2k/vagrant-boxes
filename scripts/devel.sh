@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [[ $OSTYPE == "linux-gnu" ]]; then
+  #find the debian-based distros like Debian, Ubuntu
   if [[ -f /etc/debian_version ]]; then
     USER_HOME='/home/vagrant'
     export DEBIAN_FRONTEND='noninteractive'
@@ -10,8 +11,14 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
     DEBIAN_FRONTEND=noninteractive apt-get update
     
     #apt-friendly apps
-    ##python2 and python3
-    DEBIAN_FRONTEND=noninteractive apt-get -y install python-minimal python-pip python3-minimal python3-pip nmap chromium
+    ##python3, chromium
+    if (`lsb_release -i -s | grep -q Ubuntu`); then
+      DEBIAN_FRONTEND=noninteractive apt-get -y install python3-minimal python3-pip nmap chromium-browser
+    elif (`lsb_release -i -s | grep -q Debian` ); then
+      DEBIAN_FRONTEND=noninteractive apt-get -y install python3-minimal python3-pip nmap chromium
+    else
+      DEBIAN_FRONTEND=noninteractive apt-get -y install python3-minimal python3-pip nmap chromium
+    fi
 
     ##debian8 only robotframework
     if (`lsb_release -i -s | grep -q Debian` && `lsb_release -r -s | grep -q '^8\.'` ) ; then
@@ -80,7 +87,6 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       DEBIAN_FRONTEND=noninteractive apt-get -y install snapd
     fi
     snap install intellij-idea-community --classic
-    snap install pycharm-community --classic
     snap install goland --classic
     snap install postman
 

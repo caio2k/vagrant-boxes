@@ -1,12 +1,17 @@
-# Build images
+# Build images, supply the template name as the argument
 
-$template_file="./debian-10-devel.json"
+#first argument should be the template file, second is the loglevel
+param(
+  [string] $template_file="./ubuntu-1804.json",
+  [int] $packer_log=0
+)
 
 if ((Test-Path -Path "$template_file")) {
-  Write-Output "Template file found"
+  $env:PACKER_LOG=$packer_log
+  $env:builddate=Get-Date -Format 'yyyyMMdd'
+  Write-Output "launching packer to build $template_file at $env:builddate"
   try {
-    $env:PACKER_LOG=$packer_log
-    packer build --force -only="hyperv" "$template_file"
+    packer build --force -only="hyperv" -var "BUILDDATE=$env:builddate" -var-file="secret.json" "$template_file"
   }
   catch {
     Write-Output "Packer build failed, exiting."

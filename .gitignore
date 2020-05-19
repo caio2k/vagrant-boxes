@@ -6,3 +6,4 @@
 /output-*/
 /tmp/
 test/.*
+secret.json
