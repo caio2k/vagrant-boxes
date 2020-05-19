@@ -22,22 +22,22 @@
                 "<esc><wait10><esc><esc><enter><wait>",
                 "set gfxpayload=1024x768<enter>",
                 "linux /install/vmlinuz ",
-              "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu1804.cfg ",
-              "debian-installer=en_US ",
-              "auto ",
-              "locale=en_US ",
-              "kbd-chooser/method=us ",
-              "netcfg/get_hostname={{ .Name }} ",
-              "netcfg/get_domain=vagrantup.com ",
-              "fb=false ",
-              "debconf/frontend=noninteractive ",
-              "console-setup/ask_detect=false ",
-              "console-setup/layoutcode=us ",
-              "console-setup/modelcode=pc105 ",
-              "keyboard-configuration/variant=USA ",
-              "keyboard-configuration/layout=USA ",
-              "grub-installer/bootdev=/dev/sda ",
-              "<enter>",
+                "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu1804.cfg ",
+                "debian-installer=en_US ",
+                "auto ",
+                "locale=en_US ",
+                "kbd-chooser/method=us ",
+                "netcfg/get_hostname={{ .Name }} ",
+                "netcfg/get_domain=vagrantup.com ",
+                "fb=false ",
+                "debconf/frontend=noninteractive ",
+                "console-setup/ask_detect=false ",
+                "console-setup/layoutcode=us ",
+                "console-setup/modelcode=pc105 ",
+                "keyboard-configuration/variant=USA ",
+                "keyboard-configuration/layout=USA ",
+                "grub-installer/bootdev=/dev/sda ",
+                "<enter>",
                 "initrd /install/initrd.gz<enter>",
                 "boot<enter>"
             ],
@@ -108,18 +108,58 @@
             "guest_additions_mode": "disable",
             "guest_os_type": "Ubuntu_64",
             "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cores`}}"],
-        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
-        ["modifyvm", "{{.Name}}", "--paravirtprovider", "kvm"],
-        ["modifyvm", "{{.Name}}", "--nictype1", "82540EM"],
-        ["modifyvm", "{{.Name}}", "--audio", "none"],
-        ["modifyvm", "{{.Name}}", "--usb", "off"],
-        ["modifyvm", "{{.Name}}", "--vrde", "off"],
-        ["modifyvm", "{{.Name}}", "--vram", "128"]
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--cpus",
+                    "{{user `cores`}}"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--memory",
+                    "{{user `memory`}}"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--paravirtprovider",
+                    "kvm"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--nictype1",
+                    "82540EM"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--audio",
+                    "none"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--usb",
+                    "off"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--vrde",
+                    "off"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--vram",
+                    "128"
+                ]
             ]
         },
         {
-      "type":"qemu",
+            "type": "qemu",
             "name": "qemu",
             "boot_command": [
                 "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><wait>",
@@ -161,13 +201,19 @@
             "ssh_port": 22,
             "ssh_wait_timeout": "{{user `ssh_wait_timeout`}}",
             "accelerator": "kvm",
-            "cpus": 2,
+            "cpus": "{{user `cores`}}",
             "disk_discard": "unmap",
             "disk_interface": "virtio-scsi",
             "net_device": "virtio-net",
             "qemuargs": [
-        [ "-m", "1024M" ],
-        [ "-soundhw", "ac97" ]
+                [
+                    "-m",
+                    "{{user `memory`}}M"
+                ],
+                [
+                    "-soundhw",
+                    "ac97"
+                ]
             ]
         }
     ],
@@ -192,7 +238,8 @@
         }
     ],
     "post-processors": [
-    [{
+        [
+            {
                 "type": "vagrant",
                 "compression_level": 9,
                 "output": "./boxes/{{user `box_name`}}-{{user `box_version_major`}}.{{ user `box_builddate`}}_{{.Provider}}.box",
@@ -204,7 +251,7 @@
                 "access_token": "{{user `cloud_token`}}",
                 "version": "{{user `box_version_major`}}.{{user `box_version_minor`}}.{{ user `box_builddate`}}",
                 "no_release": "true"
-    }]
+            }
+        ]
     ]
 }
-
