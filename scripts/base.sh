@@ -28,7 +28,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       echo 'Pin: release a=unstable' >> /etc/apt/preferences.d/sid.pref
       echo 'Pin-Priority: 50'        >> /etc/apt/preferences.d/sid.pref
     elif (`lsb_release -i -s | grep -q Ubuntu` && `lsb_release -r -s | grep -q '^18\.'`); then
-      echo 'deb http://ubuntu.cica.es/ubuntu/ disco main restricted universe multiverse' > /etc/apt/sources.list.d/disco.list 
+      echo 'deb http://old-releases.ubuntu.com/ubuntu/ disco main restricted universe multiverse' > /etc/apt/sources.list.d/disco.list 
       echo 'Package: *'                     >  /etc/apt/preferences.d/disco.pref
       echo 'Pin: release o=Ubuntu, a=disco' >> /etc/apt/preferences.d/disco.pref
       echo 'Pin-Priority: 50'               >> /etc/apt/preferences.d/disco.pref
